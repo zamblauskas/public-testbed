@@ -10,5 +10,6 @@ libraryDependencies ++= Seq(
   "dev.zio"       %% "zio-schema"          % "1.6.3",
   "dev.zio"       %% "zio-schema-json"     % "1.6.3",
   "dev.zio"       %% "zio-schema-protobuf" % "1.6.3",
+  "dev.zio"       %% "zio-schema-optics"   % "1.6.3",
   "org.scalatest" %% "scalatest"           % "3.2.19" % Test
 )

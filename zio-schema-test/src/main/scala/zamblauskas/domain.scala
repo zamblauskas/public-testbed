@@ -7,8 +7,8 @@ case class Order(id: String, lines: List[OrderLine])
 case class OrderLine(productId: String, quantity: Int)
 
 // automatic Schema derivation
-implicit val orderSchema: Schema[Order]        = DeriveSchema.gen[Order]
-implicit val ordersSchema: Schema[List[Order]] = Schema.list(orderSchema)
+given orderSchema: Schema[Order]        = DeriveSchema.gen[Order]
+given ordersSchema: Schema[List[Order]] = Schema.list(orderSchema)
 // Schema for OrderLine is not generated because it is not used
 
 val orders = List(

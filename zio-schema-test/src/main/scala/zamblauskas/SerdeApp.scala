@@ -2,7 +2,7 @@ package zamblauskas
 
 import zio.schema.codec.{JsonCodec, ProtobufCodec}
 
-object SerdeApp extends App {
+object SerdeApp extends App:
 
   // round trip JSON
   val ordersJsonCodec = JsonCodec.jsonCodec[List[Order]](ordersSchema)
@@ -17,4 +17,3 @@ object SerdeApp extends App {
   println(ordersProtobufValue)
   val ordersDecodedProtobuf = ordersProtobufCodec.decode(ordersProtobufValue)
   println(ordersDecodedProtobuf)
-}
