@@ -2,7 +2,7 @@ package zamblauskas
 
 import zio.schema.codec.{JsonCodec, ProtobufCodec}
 
-object SerdeTest extends App {
+object SerdeApp extends App {
 
   // round trip JSON
   val ordersJsonCodec = JsonCodec.jsonCodec[List[Order]](ordersSchema)
