@@ -1,0 +1,109 @@
+services:
+  redis-node-a:
+    image: redis:7-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000
+    volumes:
+      - redis-data-a:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-node-b:
+    image: redis:7-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000
+    volumes:
+      - redis-data-b:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-node-c:
+    image: redis:7-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000
+    volumes:
+      - redis-data-c:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6381:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-replica-a1:
+    image: redis:7-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000
+    volumes:
+      - redis-data-a1:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6382:6379"
+    depends_on:
+      - redis-node-a
+
+  redis-replica-b1:
+    image: redis:7-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000
+    volumes:
+      - redis-data-b1:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6383:6379"
+    depends_on:
+      - redis-node-b
+
+  redis-replica-c1:
+    image: redis:7-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000
+    volumes:
+      - redis-data-c1:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6384:6379"
+    depends_on:
+      - redis-node-c
+
+  redis-cluster-setup:
+    image: redis:7-alpine
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        sleep 5
+        echo "yes" | redis-cli --cluster create \
+        redis-node-a:6379 redis-node-b:6379 redis-node-c:6379 \
+        redis-replica-a1:6379 redis-replica-b1:6379 redis-replica-c1:6379 \
+        --cluster-replicas 1
+    depends_on:
+      - redis-node-a
+      - redis-node-b
+      - redis-node-c
+      - redis-replica-a1
+      - redis-replica-b1
+      - redis-replica-c1
+
+  redis-insight:
+    image: redislabs/redisinsight:2.66
+    ports:
+      - "18001:5540"
+    depends_on:
+      redis-cluster-setup:
+        condition: service_started
+
+volumes:
+  redis-data-a:
+  redis-data-b:
+  redis-data-c:
+  redis-data-a1:
+  redis-data-b1:
+  redis-data-c1:
