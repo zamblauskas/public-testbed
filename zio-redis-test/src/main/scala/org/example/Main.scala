@@ -14,14 +14,11 @@ import zio.redis.RedisConfig
 object Main extends ZIOAppDefault {
 
   val app = for {
-    redis <- ZIO.service[Redis]
-
     _ <- KeyValue.run
     _ <- Hashes.run
     _ <- Publish.run
     _ <- Subscribe.run
-    // increment counter
-    _ <- redis.incr("version_id")
+    _ <- Lock.run
   } yield ()
 
   override def run = app.provide(
