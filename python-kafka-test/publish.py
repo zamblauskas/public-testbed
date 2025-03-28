@@ -15,6 +15,7 @@ def create_random_order(sequence: int) -> Dict[str, Any]:
         "id": fake.uuid4(),
         "amount": str(Decimal(random.uniform(-1000.0, 1000.0)).quantize(Decimal("0.01"))),
         "customerId": customer_id,
+        "category": random.choice(["Transport", "Materials", "Services", "Other"]),
         "sequence": sequence
     }
 
