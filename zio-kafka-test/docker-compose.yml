@@ -2,7 +2,6 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
-    restart: always
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -10,7 +9,6 @@ services:
   kafka-a:
     image: confluentinc/cp-kafka:latest
     container_name: kafka-a
-    restart: always
     depends_on:
       - zookeeper
     ports:
@@ -25,7 +23,6 @@ services:
   kafka-b:
     image: confluentinc/cp-kafka:latest
     container_name: kafka-b
-    restart: always
     depends_on:
       - zookeeper
     ports:
@@ -40,7 +37,6 @@ services:
   kafka-c:
     image: confluentinc/cp-kafka:latest
     container_name: kafka-c
-    restart: always
     depends_on:
       - zookeeper
     ports:
@@ -55,7 +51,6 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
-    restart: always
     ports:
       - "8080:8080"
     depends_on:
